@@ -17,16 +17,20 @@ export class CreateUser {
       }
 
       const user = User.create({ ...createUserDto, id: Uuid() });
-
       await this.repository.create(user);
+
       return user.toPrimitives();
     } catch (error) {
+      console.log(error);
       if (error instanceof UserAlreadyExistException) {
         console.log(error.message);
         throw new UserAlreadyExistException(createUserDto.email);
       }
 
-      if (error instanceof Error) throw new Error(error.message);
+      if (error instanceof Error) {
+        console.log(error);
+        throw new Error(error.message);
+      }
     }
   }
 }

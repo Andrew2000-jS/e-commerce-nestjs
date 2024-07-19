@@ -1,3 +1,12 @@
+import { CreatedAt, UpdatedAt } from 'src/modules/shared';
+import {
+  UserEmail,
+  UserFullName,
+  UserId,
+  UserName,
+  UserPassword,
+} from './value-objects';
+
 export interface UserPrimitives {
   id: string;
   name: string;
@@ -9,25 +18,39 @@ export interface UserPrimitives {
   updatedAt: Date;
 }
 
-export class User {
-  private readonly id: string;
-  private readonly name: string;
-  private readonly lastName: string;
-  private readonly email: string;
-  private readonly userName: string;
-  private readonly password: string;
-  private readonly createdAt: Date;
-  private readonly updatedAt: Date;
+export type UserWithoutMetadata = Omit<
+  User,
+  'id' | 'createdAt' | 'toPrimitives'
+>;
 
-  constructor(userPrimitives: UserPrimitives) {
-    this.id = userPrimitives.id;
-    this.name = userPrimitives.name;
-    this.lastName = userPrimitives.lastName;
-    this.email = userPrimitives.email;
-    this.userName = userPrimitives.userName;
-    this.password = userPrimitives.password;
-    this.createdAt = userPrimitives.createdAt;
-    this.updatedAt = userPrimitives.updatedAt;
+export class User {
+  private readonly id: UserId;
+  private readonly name: UserFullName;
+  private readonly lastName: UserFullName;
+  private readonly email: UserEmail;
+  private readonly userName: UserName;
+  private readonly password: UserPassword;
+  private readonly createdAt: CreatedAt;
+  private readonly updatedAt: UpdatedAt;
+
+  constructor(
+    id: UserId,
+    name: UserFullName,
+    lastName: UserFullName,
+    email: UserEmail,
+    userName: UserName,
+    password: UserPassword,
+    createdAt: CreatedAt,
+    updatedAt: UpdatedAt,
+  ) {
+    this.id = id;
+    this.name = name;
+    this.lastName = lastName;
+    this.email = email;
+    this.userName = userName;
+    this.password = password;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
   }
 
   static create(plainData: {
@@ -38,41 +61,41 @@ export class User {
     userName: string;
     password: string;
   }): User {
-    return new User({
-      id: plainData.id,
-      name: plainData.name,
-      lastName: plainData.lastName,
-      email: plainData.email,
-      userName: plainData.userName,
-      password: plainData.password,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
+    return new User(
+      new UserId(plainData.id),
+      new UserFullName(plainData.name),
+      new UserFullName(plainData.lastName),
+      new UserEmail(plainData.email),
+      new UserName(plainData.userName),
+      new UserPassword(plainData.password),
+      new CreatedAt(new Date()),
+      new UpdatedAt(new Date()),
+    );
   }
 
   toPrimitives(): UserPrimitives {
     return {
-      id: this.id,
-      name: this.name,
-      lastName: this.lastName,
-      email: this.email,
-      userName: this.userName,
-      password: this.password,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
+      id: this.id.getValue(),
+      name: this.name.getValue(),
+      lastName: this.lastName.getValue(),
+      email: this.email.getValue(),
+      userName: this.userName.getValue(),
+      password: this.password.getValue(),
+      createdAt: this.createdAt.getValue(),
+      updatedAt: this.updatedAt.getValue(),
     };
   }
 
   static fromPrimitives(plainData: UserPrimitives): User {
-    return new User({
-      id: plainData.id,
-      name: plainData.name,
-      lastName: plainData.lastName,
-      email: plainData.email,
-      userName: plainData.userName,
-      password: plainData.password,
-      createdAt: plainData.createdAt,
-      updatedAt: plainData.updatedAt,
-    });
+    return new User(
+      new UserId(plainData.id),
+      new UserFullName(plainData.name),
+      new UserFullName(plainData.lastName),
+      new UserEmail(plainData.email),
+      new UserName(plainData.userName),
+      new UserPassword(plainData.password),
+      new CreatedAt(new Date()),
+      new UpdatedAt(new Date()),
+    );
   }
 }

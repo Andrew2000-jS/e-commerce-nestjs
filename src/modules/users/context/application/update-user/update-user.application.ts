@@ -2,6 +2,7 @@ import { Criteria, Injectable } from 'src/modules/shared';
 import { UserPrimitives, UserRepository } from '../../domain';
 import { UpdateUserDto } from './update-user-dto';
 import { UserNotFoundException } from '../../domain/exceptions';
+import { UserPassword } from '../../domain/value-objects';
 
 @Injectable()
 export class UpdateUser {
@@ -18,6 +19,7 @@ export class UpdateUser {
 
       await this.repository.update(id, {
         ...updateUserDto,
+        password: new UserPassword(updateUserDto.password).getValue(),
         updatedAt: new Date(),
       });
 

@@ -3,7 +3,12 @@ import {
   CriteriaPrismaConverter,
   PrismaSingleton,
 } from 'src/modules/shared';
-import { User, UserPrimitives, UserRepository } from '../../../domain';
+import {
+  User,
+  UserPrimitives,
+  UserRepository,
+  UserWithoutMetadata,
+} from '../../../domain';
 import { configurations } from 'src/modules/shared/db/orm/configuration';
 import { Injectable } from '@nestjs/common';
 
@@ -33,10 +38,7 @@ export class PostgresqlUserRepository extends UserRepository {
     }
   }
 
-  async update(
-    id: string,
-    data: Omit<User, 'id' | 'createdAt' | 'toPrimitives'>,
-  ): Promise<void> {
+  async update(id: string, data: UserWithoutMetadata): Promise<void> {
     const prisma = PrismaSingleton.getInstance(configurations);
     try {
       await prisma.user.update({
