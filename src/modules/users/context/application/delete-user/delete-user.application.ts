@@ -1,4 +1,4 @@
-import { Criteria, Injectable } from 'src/modules/shared';
+import { Criteria, Injectable } from '@/modules/shared';
 import { UserRepository } from '../../domain';
 import { UserNotFoundException } from '../../domain/exceptions';
 import { DeleteUserDto } from './delete-user.dto';
@@ -17,7 +17,6 @@ export class DeleteUser {
       await this.repository.delete(id);
     } catch (error) {
       if (error instanceof UserNotFoundException) {
-        console.log(error.message);
         throw new UserNotFoundException(id);
       }
       if (error instanceof Error) throw new Error(error.message);

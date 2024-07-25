@@ -1,7 +1,7 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { MatchUser } from '../../../context/application';
 import { UserPrimitives } from 'src/modules/users/context/domain';
-import { Criteria } from 'src/modules/shared';
+import { Criteria } from '@/modules/shared';
 import { UserErrorHanlder } from '../../utils';
 
 @Controller('/users')

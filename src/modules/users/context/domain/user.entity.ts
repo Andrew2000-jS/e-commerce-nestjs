@@ -1,4 +1,4 @@
-import { CreatedAt, UpdatedAt } from 'src/modules/shared';
+import { CreatedAt, UpdatedAt } from '@/modules/shared';
 import {
   UserEmail,
   UserFullName,

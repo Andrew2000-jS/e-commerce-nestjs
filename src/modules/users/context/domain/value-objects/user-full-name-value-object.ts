@@ -1,4 +1,4 @@
-import { ValueObject } from 'src/modules/shared';
+import { ValueObject } from '@/modules/shared';
 import { UserNameNotValidException } from '../exceptions';
 
 export class UserFullName extends ValueObject<string> {

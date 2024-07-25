@@ -1,3 +1,3 @@
-import { UuidValueObject } from 'src/modules/shared';
+import { UuidValueObject } from '@/modules/shared';
 
 export class UserId extends UuidValueObject {}

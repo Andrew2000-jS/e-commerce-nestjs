@@ -1,4 +1,4 @@
-import { ValueObject } from 'src/modules/shared';
+import { ValueObject } from '@/modules/shared';
 
 export class UserName extends ValueObject<string> {
   constructor(value: string) {
