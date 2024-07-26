@@ -16,12 +16,15 @@ export class UpdateUser {
       if (!isUserExist) {
         throw new UserNotFoundException(id);
       }
-
-      await this.repository.update(id, {
+      const data = {
         ...updateUserDto,
-        password: new UserPassword(updateUserDto.password).getValue(),
         updatedAt: new Date(),
-      });
+      };
+
+      if (updateUserDto.password)
+        data.password = new UserPassword(updateUserDto.password).getValue();
+
+      await this.repository.update(id, data);
 
       return isUserExist[0];
     } catch (error) {

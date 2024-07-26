@@ -17,19 +17,18 @@ export class UserMockRepository extends UserRepository {
   private createMock: jest.Mock;
   private updateMock: jest.Mock;
   private deleteMock: jest.Mock;
-  private matchMock: jest.Mock;
 
-  private users: UserPrimitives;
+  private users: UserPrimitives[] = [];
 
   constructor() {
     super();
     this.createMock = jest.fn();
     this.updateMock = jest.fn();
     this.deleteMock = jest.fn();
-    this.matchMock = jest.fn();
   }
 
   async create(newUser: User): Promise<void> {
+    this.users.push(newUser.toPrimitives());
     this.createMock(newUser);
   }
 
@@ -41,8 +40,28 @@ export class UserMockRepository extends UserRepository {
     this.deleteMock(id);
   }
 
-  async match(_criteria: Criteria): Promise<UserPrimitives | null> {
-    return this.users;
+  async match(criteria: Criteria): Promise<UserPrimitives | null> {
+    const criteriaFilters = criteria.filters;
+    return (
+      this.users.find((user) => {
+        return Object.entries(criteriaFilters).every(
+          ([key, value]) => user[key] === value,
+        );
+      }) || null
+    );
+  }
+
+  assertUpdateHaveBeenCalledWith(id: string, data: Partial<UserPrimitives>) {
+    expect(this.updateMock).toHaveBeenCalledWith(
+      id,
+      expect.objectContaining({
+        email: data.email,
+      }),
+    );
+  }
+
+  assertDeleteHaveBeenCalledWith(id: string) {
+    expect(this.deleteMock).toHaveBeenCalledWith(id);
   }
 
   assertCreateHaveBeenCalledWith(user: User) {
@@ -51,7 +70,7 @@ export class UserMockRepository extends UserRepository {
       expect.objectContaining({
         name: new UserFullName(userPrimitives.name),
         lastName: new UserFullName(userPrimitives.lastName),
-        email: new UserEmail('jhondoe@mail.com'),
+        email: new UserEmail(userPrimitives.email),
         userName: new UserName(userPrimitives.userName),
       }),
     );
