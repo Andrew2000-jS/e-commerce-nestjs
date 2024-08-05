@@ -8,21 +8,21 @@ import {
 export class UpdateUserDto {
   @IsString()
   @IsOptional()
-  name: string;
+  name?: string;
 
   @IsString()
   @IsOptional()
-  lastName: string;
+  lastName?: string;
 
   @IsString()
   @IsOptional()
-  userName: string;
+  userName?: string;
 
   @IsEmail()
   @IsOptional()
-  email: string;
+  email?: string;
 
   @IsStrongPassword()
   @IsOptional()
-  password: string;
+  password?: string;
 }

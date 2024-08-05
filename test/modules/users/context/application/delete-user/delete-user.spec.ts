@@ -1,4 +1,4 @@
-import { UserMockRepository } from '../../../../__mocks__';
+import { UserMockRepository } from '../../../../../__mocks__';
 import { CreateUser, DeleteUser } from '@/modules/users/context/application';
 import { UserRepository } from '@/modules/users/context/domain';
 import { Test, TestingModule } from '@nestjs/testing';

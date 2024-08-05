@@ -1,4 +1,4 @@
-import { UserMockRepository } from '../../../../__mocks__';
+import { UserMockRepository } from '../../../../../__mocks__';
 import { Uuid } from '@/modules/shared';
 import { CreateUser } from '@/modules/users/context/application';
 import { User, UserRepository } from '@/modules/users/context/domain';

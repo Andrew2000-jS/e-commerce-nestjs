@@ -1,4 +1,4 @@
-import { UserMockRepository } from '../../../../__mocks__';
+import { UserMockRepository } from '../../../../../__mocks__';
 import {
   CreateUser,
   UpdateUser,
@@ -29,7 +29,7 @@ describe('Updste user use case', () => {
     repository = module.get<UserMockRepository>(UserRepository);
   });
 
-  it('should can update an user', async () => {
+  it('should can update a user', async () => {
     // Given: Data for the new user to be created
     const mockUser = {
       name: 'Jhon',
@@ -42,7 +42,7 @@ describe('Updste user use case', () => {
     // When: Execute the use case to create a new user
     const user = await createUserService.run(mockUser);
 
-    // And: Execute the use case to update an user
+    // And: Execute the use case to update a user
     await updateUserService.run(user.id, {
       name: 'Bill',
       email: 'billdoe@mail.com',

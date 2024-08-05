@@ -24,7 +24,7 @@ export function UserErrorHanlder() {
         if (error instanceof UserAlreadyExistException)
           throw new BadRequestException('User Already Exist');
 
-        throw new InternalServerErrorException();
+        throw new InternalServerErrorException(error.message);
       }
     };
 
