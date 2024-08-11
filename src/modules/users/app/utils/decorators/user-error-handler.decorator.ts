@@ -1,12 +1,22 @@
 import {
   UserAlreadyExistException,
+  UserEmailNotValidException,
+  UserNameNotValidException,
   UserNotFoundException,
+  UserPasswordNotValidException,
 } from '@/modules/users/context/domain/exceptions';
 import {
   BadRequestException,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+
+const errorTypes = [
+  UserAlreadyExistException,
+  UserEmailNotValidException,
+  UserNameNotValidException,
+  UserPasswordNotValidException,
+];
 
 export function UserErrorHanlder() {
   return (
@@ -19,10 +29,14 @@ export function UserErrorHanlder() {
       try {
         return await orginalMethod.apply(this, args);
       } catch (error) {
+        const errorHanlder = errorTypes.some(
+          (errorType) => error instanceof errorType,
+        );
+
+        if (errorHanlder) throw new BadRequestException(error.message);
+
         if (error instanceof UserNotFoundException)
           throw new NotFoundException('User not found');
-        if (error instanceof UserAlreadyExistException)
-          throw new BadRequestException('User Already Exist');
 
         throw new InternalServerErrorException(error.message);
       }

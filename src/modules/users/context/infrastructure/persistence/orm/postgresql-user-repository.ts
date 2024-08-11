@@ -2,7 +2,6 @@ import {
   Criteria,
   CriteriaPrismaConverter,
   PrismaSingleton,
-  configurations,
 } from '@/modules/shared';
 import {
   User,
@@ -11,14 +10,26 @@ import {
   UserWithoutMetadata,
 } from '../../../domain';
 import { Injectable } from '@nestjs/common';
+import { Pool } from 'pg';
+import { PrismaPg } from '@prisma/adapter-pg';
+
+const { NODE_ENV, DB_URL_DEV, DB_TEST_URL } = process.env;
+
+process.env.DATABASE_URL = NODE_ENV === 'test' ? DB_TEST_URL : DB_URL_DEV;
+
+const pool = new Pool({
+  connectionString: NODE_ENV === 'test' ? DB_TEST_URL : DB_URL_DEV,
+});
+
+const adapter = new PrismaPg(pool);
 
 @Injectable()
 export class PostgresqlUserRepository extends UserRepository {
   async create(newUser: User): Promise<void> {
-    const prisma = PrismaSingleton.getInstance(configurations);
+    const prisma = PrismaSingleton.getInstance(adapter);
     const userPrimitives = newUser.toPrimitives();
     try {
-      await prisma.user.create({
+      await prisma.users.create({
         data: {
           id: userPrimitives.id,
           name: userPrimitives.name,
@@ -38,9 +49,9 @@ export class PostgresqlUserRepository extends UserRepository {
   }
 
   async update(id: string, data: UserWithoutMetadata): Promise<void> {
-    const prisma = PrismaSingleton.getInstance(configurations);
+    const prisma = PrismaSingleton.getInstance(adapter);
     try {
-      await prisma.user.update({
+      await prisma.users.update({
         where: { id },
         data: this.userFromPrimitivesMapper(data),
       });
@@ -54,9 +65,9 @@ export class PostgresqlUserRepository extends UserRepository {
   }
 
   async delete(id: string): Promise<void> {
-    const prisma = PrismaSingleton.getInstance(configurations);
+    const prisma = PrismaSingleton.getInstance(adapter);
     try {
-      await prisma.user.delete({ where: { id } });
+      await prisma.users.delete({ where: { id } });
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(error.message);
@@ -67,10 +78,10 @@ export class PostgresqlUserRepository extends UserRepository {
   }
 
   async match(criteria: Criteria): Promise<UserPrimitives | null> {
-    const prisma = PrismaSingleton.getInstance(configurations);
+    const prisma = PrismaSingleton.getInstance(adapter);
     const prismaConvert = CriteriaPrismaConverter.convert(criteria);
     try {
-      const user = await prisma.user.findMany({ ...prismaConvert });
+      const user = await prisma.users.findMany({ ...prismaConvert });
       if (user.length < 1) {
         return null;
       }

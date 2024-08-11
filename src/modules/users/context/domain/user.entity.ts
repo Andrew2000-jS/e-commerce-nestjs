@@ -98,4 +98,20 @@ export class User {
       new UpdatedAt(new Date()),
     );
   }
+
+  static fromPartialPrimitives(
+    partialData: Partial<UserPrimitives>,
+    currentData: UserPrimitives,
+  ): User {
+    return new User(
+      new UserId(partialData.id ?? currentData.id),
+      new UserFullName(partialData.name ?? currentData.name),
+      new UserFullName(partialData.lastName ?? currentData.lastName),
+      new UserEmail(partialData.email ?? currentData.email),
+      new UserName(partialData.userName ?? currentData.userName),
+      new UserPassword(partialData.password ?? currentData.password),
+      new CreatedAt(partialData.createdAt ?? currentData.createdAt),
+      new UpdatedAt(new Date()),
+    );
+  }
 }

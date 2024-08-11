@@ -1,6 +1,6 @@
 export class UserNameNotValidException extends Error {
-  constructor(name: string) {
-    super(`User name is not valid: ${name}`);
+  constructor() {
+    super('User name is not valid');
     this.name = UserNameNotValidException.name;
   }
 }

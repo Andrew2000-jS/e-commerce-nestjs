@@ -12,12 +12,12 @@ export class DeleteUser {
       const criteria = new Criteria({ id });
       const isUserExist = await this.repository.match(criteria);
       if (!isUserExist) {
-        throw new UserNotFoundException(id);
+        throw new UserNotFoundException();
       }
       await this.repository.delete(id);
     } catch (error) {
       if (error instanceof UserNotFoundException) {
-        throw new UserNotFoundException(id);
+        throw new UserNotFoundException();
       }
       if (error instanceof Error) throw new Error(error.message);
     }
