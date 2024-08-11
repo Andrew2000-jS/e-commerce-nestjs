@@ -17,7 +17,7 @@ export class UserFullName extends ValueObject<string> {
       hasNumbers.test(value);
 
     if (condition) {
-      throw new UserNameNotValidException(value);
+      throw new UserNameNotValidException();
     }
   }
 }
