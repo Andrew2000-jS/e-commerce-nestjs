@@ -1,12 +1,12 @@
 import {
+  UserAlreadyExistException,
+  UserNotFoundException,
+} from '@/modules/users/context/domain/exceptions';
+import {
   BadRequestException,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import {
-  UserAlreadyExistException,
-  UserNotFoundException,
-} from 'src/modules/users/context/domain/exceptions';
 
 export function UserErrorHanlder() {
   return (
@@ -24,7 +24,7 @@ export function UserErrorHanlder() {
         if (error instanceof UserAlreadyExistException)
           throw new BadRequestException('User Already Exist');
 
-        throw new InternalServerErrorException();
+        throw new InternalServerErrorException(error.message);
       }
     };
 

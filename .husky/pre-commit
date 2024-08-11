@@ -1,0 +1,10 @@
+#!/bin/sh
+# This hook is called before a commit is made
+# All scripts should be run and return 0 if successful, 1 if not
+# More info: https://git-scm.com/docs/githooks
+
+# Run lint-staged
+pnpm exec lint-staged && npm run test
+
+# Exit with the exit code of the last command
+exit $?

@@ -1,4 +1,4 @@
-import { Criteria, Injectable } from 'src/modules/shared';
+import { Criteria, Injectable } from '@/modules/shared';
 import { UserPrimitives, UserRepository } from '../../domain';
 import { UpdateUserDto } from './update-user-dto';
 import { UserNotFoundException } from '../../domain/exceptions';
@@ -16,17 +16,19 @@ export class UpdateUser {
       if (!isUserExist) {
         throw new UserNotFoundException(id);
       }
-
-      await this.repository.update(id, {
+      const data = {
         ...updateUserDto,
-        password: new UserPassword(updateUserDto.password).getValue(),
         updatedAt: new Date(),
-      });
+      };
+
+      if (updateUserDto.password)
+        data.password = new UserPassword(updateUserDto.password).getValue();
+
+      await this.repository.update(id, data);
 
       return isUserExist[0];
     } catch (error) {
       if (error instanceof UserNotFoundException) {
-        console.log(error.message);
         throw new UserNotFoundException(id);
       }
       if (error instanceof Error) throw new Error(error.message);

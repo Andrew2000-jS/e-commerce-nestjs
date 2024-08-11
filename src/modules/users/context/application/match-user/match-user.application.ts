@@ -1,4 +1,4 @@
-import { Criteria, Injectable } from 'src/modules/shared';
+import { Criteria, Injectable } from '@/modules/shared';
 import { UserPrimitives, UserRepository } from '../../domain';
 
 @Injectable()
@@ -10,7 +10,6 @@ export class MatchUser {
       const foundUser = await this.repository.match(criteria);
       return foundUser;
     } catch (error) {
-      console.log(error);
       if (error instanceof Error) throw new Error(error.message);
     }
   }

@@ -2,14 +2,14 @@ import {
   Criteria,
   CriteriaPrismaConverter,
   PrismaSingleton,
-} from 'src/modules/shared';
+  configurations,
+} from '@/modules/shared';
 import {
   User,
   UserPrimitives,
   UserRepository,
   UserWithoutMetadata,
 } from '../../../domain';
-import { configurations } from 'src/modules/shared/db/orm/configuration';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -30,7 +30,6 @@ export class PostgresqlUserRepository extends UserRepository {
       });
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error.message);
         throw new Error(error.message);
       }
     } finally {
@@ -47,7 +46,6 @@ export class PostgresqlUserRepository extends UserRepository {
       });
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error.message);
         throw new Error(error.message);
       }
     } finally {
@@ -61,7 +59,6 @@ export class PostgresqlUserRepository extends UserRepository {
       await prisma.user.delete({ where: { id } });
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error.message);
         throw new Error(error.message);
       }
     } finally {
@@ -80,7 +77,6 @@ export class PostgresqlUserRepository extends UserRepository {
       return this.userPrimitivesMapper(user[0]);
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error.message);
         throw new Error(error.message);
       }
     } finally {

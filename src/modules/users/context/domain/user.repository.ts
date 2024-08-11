@@ -1,4 +1,4 @@
-import { Criteria } from 'src/modules/shared';
+import { Criteria } from '@/modules/shared';
 import { User, UserPrimitives, UserWithoutMetadata } from './user.entity';
 export abstract class UserRepository {
   abstract create(newUser: User): Promise<void>;

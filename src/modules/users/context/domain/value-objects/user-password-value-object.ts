@@ -1,4 +1,4 @@
-import { compare, hash } from 'src/modules/shared/utils/encrypt';
+import { compare, hash } from '@/modules/shared';
 import { UserPasswordNotValidException } from '../exceptions';
 
 export class UserPassword {

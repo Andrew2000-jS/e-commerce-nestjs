@@ -1,3 +1,3 @@
-export * from './criteria/domain';
-export * from './criteria/infrastructure';
+export * from './criteria';
+export * from './exceptions';
 export * from './value-objects';
