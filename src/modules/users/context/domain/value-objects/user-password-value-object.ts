@@ -1,4 +1,4 @@
-import { compare, hash } from '@/modules/shared';
+import { hash } from '@/modules/shared';
 import { UserPasswordNotValidException } from '../exceptions';
 
 export class UserPassword {
@@ -7,10 +7,6 @@ export class UserPassword {
   constructor(value: string) {
     this.ensurePasswordIsValid(value);
     this.value = this.hashPassword(value);
-  }
-
-  static comparePassword(value: string, encrypted: string): boolean {
-    return compare(value, encrypted);
   }
 
   private hashPassword(value: string): string {
