@@ -1,30 +1,26 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { UserPrimitives, UserRepository } from '@/modules/users/context/domain';
-import { UserMockRepository } from '../../../../../__mocks__';
+import { UserPrimitives } from '@/modules/users/context/domain';
 import { DeleteUserCtr } from '@/modules/users/app';
 import { CreateUser, DeleteUser } from '@/modules/users/context/application';
+import { testingModule } from './delete-testing-module';
+import { ExecutionContext } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { AuthGuard } from '@/modules/shared';
 
 describe('Delete user controller', () => {
   let controller: DeleteUserCtr;
   let deleteUserService: DeleteUser;
   let createUserService: CreateUser;
+  let guard: AuthGuard;
+  let jwtService: JwtService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [DeleteUserCtr],
-      providers: [
-        DeleteUser,
-        CreateUser,
-        {
-          provide: UserRepository,
-          useClass: UserMockRepository,
-        },
-      ],
-    }).compile();
+    const module = await testingModule();
 
     deleteUserService = module.get<DeleteUser>(DeleteUser);
     createUserService = module.get<CreateUser>(CreateUser);
     controller = module.get<DeleteUserCtr>(DeleteUserCtr);
+    guard = module.get<AuthGuard>(AuthGuard);
+    jwtService = new JwtService({ secret: 'test_secret' });
   });
 
   it('should be able to delete a user', async () => {
@@ -65,5 +61,36 @@ describe('Delete user controller', () => {
     // When: Attempting to delete a user with a non-existent ID
     // Then: The operation should throw an error because the user does not exist
     await expect(controller.run(userId)).rejects.toThrow();
+  });
+
+  it('should throw if user has not access', async () => {
+    // Given: An invalid authorization header
+
+    // Then: Execution ctx for guard
+    const executionCtx = {
+      switchToHttp: () => ({
+        getRequest: () => ({ token: null }),
+      }),
+    } as ExecutionContext;
+
+    // Attempting to send an invalid authorization header
+    // Then: expect the guard to throw an error
+    expect(guard.canActivate(executionCtx)).rejects.toThrow();
+  });
+
+  it('should be able to update if user has valid token', async () => {
+    // Given: A valid authorization header
+    const token = await jwtService.sign('Test');
+
+    // Then: Execution ctx for guard
+    const executionCtx = {
+      switchToHttp: () => ({
+        getRequest: () => ({ headers: { authorization: `Bearer ${token}` } }),
+      }),
+    } as ExecutionContext;
+
+    // Attempting to send an authorization header
+    // Then: expect the guard resolve the request and allow user to continue
+    expect(guard.canActivate(executionCtx)).resolves.toBe(true);
   });
 });

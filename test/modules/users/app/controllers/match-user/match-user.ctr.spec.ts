@@ -1,9 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { UserPrimitives, UserRepository } from '@/modules/users/context/domain';
-import { UserMockRepository } from '../../../../../__mocks__';
+import { UserPrimitives } from '@/modules/users/context/domain';
 import { MatchUserCtr } from '@/modules/users/app';
 import { CreateUser, MatchUser } from '@/modules/users/context/application';
 import { Criteria } from '@/modules/shared';
+import { testingModule } from './match-testing-module';
 
 describe('Match user controller', () => {
   let controller: MatchUserCtr;
@@ -11,17 +10,7 @@ describe('Match user controller', () => {
   let createUserService: CreateUser;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [MatchUserCtr],
-      providers: [
-        MatchUser,
-        CreateUser,
-        {
-          provide: UserRepository,
-          useClass: UserMockRepository,
-        },
-      ],
-    }).compile();
+    const module = await testingModule();
 
     matchUserService = module.get<MatchUser>(MatchUser);
     createUserService = module.get<CreateUser>(CreateUser);

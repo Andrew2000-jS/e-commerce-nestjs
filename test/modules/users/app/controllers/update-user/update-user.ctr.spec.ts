@@ -1,30 +1,26 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { UserPrimitives, UserRepository } from '@/modules/users/context/domain';
-import { UserMockRepository } from '../../../../../__mocks__';
+import { UserPrimitives } from '@/modules/users/context/domain';
 import { UpdateUserCtr } from '@/modules/users/app';
 import { CreateUser, UpdateUser } from '@/modules/users/context/application';
+import { testingModule } from './update-testing-module';
+import { AuthGuard } from '@/modules/shared';
+import { ExecutionContext } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 
 describe('Update user controller', () => {
   let controller: UpdateUserCtr;
   let updateUserService: UpdateUser;
   let createUserService: CreateUser;
+  let guard: AuthGuard;
+  let jwtService: JwtService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [UpdateUserCtr],
-      providers: [
-        UpdateUser,
-        CreateUser,
-        {
-          provide: UserRepository,
-          useClass: UserMockRepository,
-        },
-      ],
-    }).compile();
+    const module = await testingModule();
 
     updateUserService = module.get<UpdateUser>(UpdateUser);
     createUserService = module.get<CreateUser>(CreateUser);
     controller = module.get<UpdateUserCtr>(UpdateUserCtr);
+    guard = module.get<AuthGuard>(AuthGuard);
+    jwtService = new JwtService({ secret: 'test_secret' });
   });
 
   it('should be able to update a user', async () => {
@@ -71,5 +67,36 @@ describe('Update user controller', () => {
     // When: Attempting to update the user with the non-existent ID
     // Then: Expect the controller to throw an error
     await expect(controller.run(userId, { name: 'Bill' })).rejects.toThrow();
+  });
+
+  it('should throw if user has not access', async () => {
+    // Given: An invalid authorization header
+
+    // Then: Execution ctx for guard
+    const executionCtx = {
+      switchToHttp: () => ({
+        getRequest: () => ({ token: null }),
+      }),
+    } as ExecutionContext;
+
+    // Attempting to send an invalid authorization header
+    // Then: expect the guard to throw an error
+    expect(guard.canActivate(executionCtx)).rejects.toThrow();
+  });
+
+  it('should be able to update if user has valid token', async () => {
+    // Given: A valid authorization header
+    const token = await jwtService.sign('Test');
+
+    // Then: Execution ctx for guard
+    const executionCtx = {
+      switchToHttp: () => ({
+        getRequest: () => ({ headers: { authorization: `Bearer ${token}` } }),
+      }),
+    } as ExecutionContext;
+
+    // Attempting to send an authorization header
+    // Then: expect the guard resolve the request and allow user to continue
+    expect(guard.canActivate(executionCtx)).resolves.toBe(true);
   });
 });

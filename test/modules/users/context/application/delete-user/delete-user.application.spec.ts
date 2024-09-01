@@ -1,7 +1,8 @@
 import { UserMockRepository } from '../../../../../__mocks__';
 import { CreateUser, DeleteUser } from '@/modules/users/context/application';
 import { UserRepository } from '@/modules/users/context/domain';
-import { Test, TestingModule } from '@nestjs/testing';
+import { TestingModule } from '@nestjs/testing';
+import { testingModule } from './delete-testing-module';
 
 describe('Delete user use case', () => {
   let deleteUserService: DeleteUser;
@@ -9,17 +10,7 @@ describe('Delete user use case', () => {
   let repository: UserMockRepository;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        DeleteUser,
-        CreateUser,
-        {
-          provide: UserRepository,
-          useClass: UserMockRepository,
-        },
-      ],
-    }).compile();
-
+    const module: TestingModule = await testingModule();
     deleteUserService = module.get<DeleteUser>(DeleteUser);
     createUserService = module.get<CreateUser>(CreateUser);
     repository = module.get<UserMockRepository>(UserRepository);

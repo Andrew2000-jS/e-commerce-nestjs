@@ -1,9 +1,11 @@
-import { Body, Controller, Param, Patch } from '@nestjs/common';
+import { Body, Controller, Param, Patch, UseGuards } from '@nestjs/common';
 import { UpdateUser, UpdateUserDto } from '../../../context/application';
 import { UserPrimitives } from 'src/modules/users/context/domain';
 import { UserErrorHanlder } from '../../utils';
+import { AuthGuard } from '@/modules/shared';
 
 @Controller('/users')
+@UseGuards(AuthGuard)
 export class UpdateUserCtr {
   constructor(private readonly updateUser: UpdateUser) {}
 

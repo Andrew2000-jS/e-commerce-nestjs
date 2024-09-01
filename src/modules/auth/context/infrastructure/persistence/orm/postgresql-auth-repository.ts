@@ -24,7 +24,7 @@ export class PostgresqlAuthRepository extends AuthRepository {
     const prisma = PrismaSingleton.getInstance(adapter);
     try {
       await prisma.auth.update({
-        where: { id },
+        where: { user_id: id },
         data: this.authFromPrimitivesMapper(data),
       });
     } catch (error) {
@@ -40,7 +40,10 @@ export class PostgresqlAuthRepository extends AuthRepository {
     const prisma = PrismaSingleton.getInstance(adapter);
     const prismaConvert = CriteriaPrismaConverter.convert(criteria);
     try {
-      const auth = await prisma.auth.findMany({ ...prismaConvert });
+      const auth = await prisma.auth.findMany({
+        ...prismaConvert,
+        where: this.authPrimitivesMapper(prismaConvert.where),
+      });
       if (auth.length < 1) {
         return null;
       }

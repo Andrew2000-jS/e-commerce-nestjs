@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
-import { LogIn, MatchUser } from '../application';
-import { LogInCtr } from '../../app';
+import { LogIn, LogOut, MatchUser } from '../application';
+import { LogInCtr, LogOutCtr } from '../../app';
 import { PostgresqlAuthRepository } from './persistence';
 import { AuthRepository } from '../domain';
 
 @Module({
-  controllers: [LogInCtr],
+  controllers: [LogInCtr, LogOutCtr],
   providers: [
     LogIn,
+    LogOut,
     MatchUser,
     PostgresqlAuthRepository,
     {
@@ -15,6 +16,6 @@ import { AuthRepository } from '../domain';
       useExisting: PostgresqlAuthRepository,
     },
   ],
-  exports: [LogIn, MatchUser],
+  exports: [LogIn, LogOut, MatchUser],
 })
 export class AuthModule {}

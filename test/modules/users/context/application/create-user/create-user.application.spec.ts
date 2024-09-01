@@ -2,22 +2,15 @@ import { UserMockRepository } from '../../../../../__mocks__';
 import { Uuid } from '@/modules/shared';
 import { CreateUser } from '@/modules/users/context/application';
 import { User, UserRepository } from '@/modules/users/context/domain';
-import { Test, TestingModule } from '@nestjs/testing';
+import { TestingModule } from '@nestjs/testing';
+import { testingModule } from './create-testing-module';
 
 describe('Create user use case', () => {
   let service: CreateUser;
   let repository: UserMockRepository;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        CreateUser,
-        {
-          provide: UserRepository,
-          useClass: UserMockRepository,
-        },
-      ],
-    }).compile();
+    const module: TestingModule = await testingModule();
 
     service = module.get<CreateUser>(CreateUser);
     repository = module.get<UserMockRepository>(UserRepository);

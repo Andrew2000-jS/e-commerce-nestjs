@@ -19,11 +19,11 @@ export function AuthErrorHanlder() {
       try {
         return await orginalMethod.apply(this, args);
       } catch (error) {
-        if (AuthIncorrectPasswordException)
-          throw new BadRequestException(error.message);
-
         if (error instanceof AuthNotFoundException)
           throw new NotFoundException('User not found');
+
+        if (AuthIncorrectPasswordException)
+          throw new BadRequestException(error.message);
 
         throw new InternalServerErrorException(error.message);
       }
