@@ -5,7 +5,8 @@ import {
   UpdateUserDto,
 } from '@/modules/users/context/application';
 import { UserRepository } from '@/modules/users/context/domain';
-import { Test, TestingModule } from '@nestjs/testing';
+import { TestingModule } from '@nestjs/testing';
+import { testingModule } from './update-testing-module';
 
 describe('Updste user use case', () => {
   let updateUserService: UpdateUser;
@@ -13,17 +14,7 @@ describe('Updste user use case', () => {
   let repository: UserMockRepository;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        UpdateUser,
-        CreateUser,
-        {
-          provide: UserRepository,
-          useClass: UserMockRepository,
-        },
-      ],
-    }).compile();
-
+    const module: TestingModule = await testingModule();
     updateUserService = module.get<UpdateUser>(UpdateUser);
     createUserService = module.get<CreateUser>(CreateUser);
     repository = module.get<UserMockRepository>(UserRepository);

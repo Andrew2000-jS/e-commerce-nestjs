@@ -1,24 +1,14 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { UserPrimitives, UserRepository } from '@/modules/users/context/domain';
-import { UserMockRepository } from '../../../../../__mocks__';
+import { UserPrimitives } from '@/modules/users/context/domain';
 import { CreateUserCtr } from '@/modules/users/app';
 import { CreateUser } from '@/modules/users/context/application';
+import { testingModule } from './create-testing-module';
 
 describe('Create user controller', () => {
   let controller: CreateUserCtr;
   let service: CreateUser;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [CreateUserCtr],
-      providers: [
-        CreateUser,
-        {
-          provide: UserRepository,
-          useClass: UserMockRepository,
-        },
-      ],
-    }).compile();
+    const module = await testingModule();
 
     service = module.get<CreateUser>(CreateUser);
     controller = module.get<CreateUserCtr>(CreateUserCtr);

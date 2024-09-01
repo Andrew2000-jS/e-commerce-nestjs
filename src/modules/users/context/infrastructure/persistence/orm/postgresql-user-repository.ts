@@ -29,7 +29,7 @@ export class PostgresqlUserRepository extends UserRepository {
     const prisma = PrismaSingleton.getInstance(adapter);
     const userPrimitives = newUser.toPrimitives();
     try {
-      await prisma.users.create({
+      const newUser = await prisma.users.create({
         data: {
           id: userPrimitives.id,
           name: userPrimitives.name,
@@ -37,6 +37,14 @@ export class PostgresqlUserRepository extends UserRepository {
           email: userPrimitives.email,
           user_name: userPrimitives.userName,
           password: userPrimitives.password,
+        },
+      });
+
+      await prisma.auth.create({
+        data: {
+          user_name: newUser.user_name,
+          password: newUser.password,
+          user_id: newUser.id,
         },
       });
     } catch (error) {
